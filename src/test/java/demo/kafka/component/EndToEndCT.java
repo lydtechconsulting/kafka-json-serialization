@@ -1,8 +1,10 @@
 package demo.kafka.component;
 
 import java.util.List;
-import java.util.UUID;
 
+import demo.kafka.event.DemoInboundEvent;
+import demo.kafka.event.DemoInboundKey;
+import demo.kafka.util.TestEventData;
 import dev.lydtech.component.framework.client.kafka.KafkaClient;
 import dev.lydtech.component.framework.extension.TestContainersSetupExtension;
 import dev.lydtech.component.framework.mapper.JsonMapper;
@@ -15,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static demo.kafka.util.TestEventData.INBOUND_DATA;
-import static demo.kafka.util.TestEventData.buildDemoInboundEvent;
+import static java.util.UUID.randomUUID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
@@ -37,17 +39,16 @@ public class EndToEndCT {
         consumer.close();
     }
 
-
     /**
-     * Send in multiple events and ensure an outbound event is emitted for each.
+     * Send in multiple keyed events and ensure an outbound event is emitted for each.
      */
     @Test
     public void testFlow() throws Exception {
         int totalMessages = 10;
         for (int i=0; i<totalMessages; i++) {
-            String key = UUID.randomUUID().toString();
-            String payload = UUID.randomUUID().toString();
-            KafkaClient.getInstance().sendMessage("demo-inbound-topic", key, JsonMapper.writeToJson(buildDemoInboundEvent(payload)));
+            DemoInboundKey testKey = TestEventData.buildDemoInboundKey(randomUUID(), randomUUID());
+            DemoInboundEvent testEvent = TestEventData.buildDemoInboundEvent(randomUUID());
+            KafkaClient.getInstance().sendMessage("demo-inbound-topic", JsonMapper.writeToJson(testKey), JsonMapper.writeToJson(testEvent));
         }
         List<ConsumerRecord<String, String>> outboundEvents = KafkaClient.getInstance().consumeAndAssert("testFlow", consumer, totalMessages, 3);
         outboundEvents.stream().forEach(outboundEvent -> assertThat(outboundEvent.value(), containsString(INBOUND_DATA)));

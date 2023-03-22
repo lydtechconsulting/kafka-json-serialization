@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DemoOutboundEvent {
+public class DemoInboundKey {
 
-    private UUID id;
+    private UUID primaryId;
 
-    private String outboundData;
+    private UUID secondaryId;
 }

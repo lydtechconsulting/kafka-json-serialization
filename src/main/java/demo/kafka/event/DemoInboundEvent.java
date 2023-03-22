@@ -1,5 +1,7 @@
 package demo.kafka.event;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DemoInboundEvent {
 
-    private String id;
+    private UUID id;
 
     private String inboundData;
 }

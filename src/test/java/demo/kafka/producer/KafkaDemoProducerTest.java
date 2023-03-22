@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import demo.kafka.event.DemoOutboundEvent;
+import demo.kafka.event.DemoOutboundKey;
 import demo.kafka.properties.KafkaDemoProperties;
 import demo.kafka.util.TestEventData;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,19 +40,19 @@ public class KafkaDemoProducerTest {
      */
     @Test
     public void testSendMessage_Success() throws Exception {
-        String key = "test-key";
-        DemoOutboundEvent testEvent = TestEventData.buildDemoOutboundEvent(randomUUID().toString());
+        DemoOutboundKey testKey = TestEventData.buildDemoOutboundKey(randomUUID());
+        DemoOutboundEvent testEvent = TestEventData.buildDemoOutboundEvent(randomUUID());
         String topic = "test-outbound-topic";
 
         when(propertiesMock.getOutboundTopic()).thenReturn(topic);
         CompletableFuture futureResult = mock(CompletableFuture.class);
         SendResult expectedSendResult = mock(SendResult.class);
         when(futureResult.get()).thenReturn(expectedSendResult);
-        when(kafkaTemplateMock.send(topic, key, testEvent)).thenReturn(futureResult);
+        when(kafkaTemplateMock.send(topic, testKey, testEvent)).thenReturn(futureResult);
 
-        SendResult result = kafkaDemoProducer.sendMessage(key, testEvent);
+        SendResult result = kafkaDemoProducer.sendMessage(testKey, testEvent);
 
-        verify(kafkaTemplateMock, times(1)).send(topic, key, testEvent);
+        verify(kafkaTemplateMock, times(1)).send(topic, testKey, testEvent);
         assertThat(result, equalTo(expectedSendResult));
     }
 
@@ -60,21 +61,21 @@ public class KafkaDemoProducerTest {
      */
     @Test
     public void testSendMessage_ExceptionOnSend() throws Exception {
-        String key = "test-key";
-        DemoOutboundEvent testEvent = TestEventData.buildDemoOutboundEvent(randomUUID().toString());
+        DemoOutboundKey testKey = TestEventData.buildDemoOutboundKey(randomUUID());
+        DemoOutboundEvent testEvent = TestEventData.buildDemoOutboundEvent(randomUUID());
         String topic = "test-outbound-topic";
 
         when(propertiesMock.getOutboundTopic()).thenReturn(topic);
         CompletableFuture futureResult = mock(CompletableFuture.class);
-        when(kafkaTemplateMock.send(topic, key, testEvent)).thenReturn(futureResult);
+        when(kafkaTemplateMock.send(topic, testKey, testEvent)).thenReturn(futureResult);
 
         doThrow(new ExecutionException("Kafka send failure", new Exception("Failed"))).when(futureResult).get();
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
-                    kafkaDemoProducer.sendMessage(key, testEvent);
+                    kafkaDemoProducer.sendMessage(testKey, testEvent);
         });
 
-        verify(kafkaTemplateMock, times(1)).send(topic, key, testEvent);
+        verify(kafkaTemplateMock, times(1)).send(topic, testKey, testEvent);
         assertThat(exception.getMessage(), equalTo("Error sending message to topic " + topic));
     }
 }
