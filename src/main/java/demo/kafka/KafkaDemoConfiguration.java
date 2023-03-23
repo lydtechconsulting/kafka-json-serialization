@@ -61,8 +61,10 @@ public class KafkaDemoConfiguration {
     public ProducerFactory<DemoOutboundKey, DemoOutboundEvent> producerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
         final Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
         return new DefaultKafkaProducerFactory<>(config);
     }
 }
