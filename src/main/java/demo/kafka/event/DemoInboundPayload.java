@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DemoInboundEvent {
+public class DemoInboundPayload {
 
     private UUID id;
 

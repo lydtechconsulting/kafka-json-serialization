@@ -2,8 +2,8 @@ package demo.kafka.util;
 
 import java.util.UUID;
 
-import demo.kafka.event.DemoInboundEvent;
 import demo.kafka.event.DemoInboundKey;
+import demo.kafka.event.DemoInboundPayload;
 import demo.kafka.event.DemoOutboundEvent;
 import demo.kafka.event.DemoOutboundKey;
 
@@ -19,8 +19,8 @@ public class TestEventData {
                 .build();
     }
 
-    public static DemoInboundEvent buildDemoInboundEvent(UUID id) {
-        return DemoInboundEvent.builder()
+    public static DemoInboundPayload buildDemoInboundPayload(UUID id) {
+        return DemoInboundPayload.builder()
                 .id(id)
                 .inboundData(INBOUND_DATA)
                 .build();

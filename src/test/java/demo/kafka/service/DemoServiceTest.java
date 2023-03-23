@@ -1,7 +1,7 @@
 package demo.kafka.service;
 
-import demo.kafka.event.DemoInboundEvent;
 import demo.kafka.event.DemoInboundKey;
+import demo.kafka.event.DemoInboundPayload;
 import demo.kafka.event.DemoOutboundEvent;
 import demo.kafka.event.DemoOutboundKey;
 import demo.kafka.producer.KafkaDemoProducer;
@@ -32,9 +32,9 @@ public class DemoServiceTest {
     @Test
     public void testProcess() {
         DemoInboundKey testKey = TestEventData.buildDemoInboundKey(randomUUID(), randomUUID());
-        DemoInboundEvent testEvent = TestEventData.buildDemoInboundEvent(randomUUID());
+        DemoInboundPayload testPayload = TestEventData.buildDemoInboundPayload(randomUUID());
 
-        service.process(testKey, testEvent);
+        service.process(testKey, testPayload);
 
         verify(mockKafkaDemoProducer, times(1)).sendMessage(any(DemoOutboundKey.class), any(DemoOutboundEvent.class));
     }

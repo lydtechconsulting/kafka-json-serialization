@@ -1,7 +1,7 @@
 package demo.kafka.consumer;
 
-import demo.kafka.event.DemoInboundEvent;
 import demo.kafka.event.DemoInboundKey;
+import demo.kafka.event.DemoInboundPayload;
 import demo.kafka.service.DemoService;
 import demo.kafka.util.TestEventData;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,11 +30,11 @@ public class KafkaDemoConsumerTest {
     @Test
     public void testListen_Success() {
         DemoInboundKey testKey = TestEventData.buildDemoInboundKey(randomUUID(), randomUUID());
-        DemoInboundEvent testEvent = TestEventData.buildDemoInboundEvent(randomUUID());
+        DemoInboundPayload testPayload = TestEventData.buildDemoInboundPayload(randomUUID());
 
-        consumer.listen(testKey, testEvent);
+        consumer.listen(testKey, testPayload);
 
-        verify(serviceMock, times(1)).process(testKey, testEvent);
+        verify(serviceMock, times(1)).process(testKey, testPayload);
     }
 
     /**
@@ -45,12 +45,12 @@ public class KafkaDemoConsumerTest {
     @Test
     public void testListen_ServiceThrowsException() {
         DemoInboundKey testKey = TestEventData.buildDemoInboundKey(randomUUID(), randomUUID());
-        DemoInboundEvent testEvent = TestEventData.buildDemoInboundEvent(randomUUID());
+        DemoInboundPayload testPayload = TestEventData.buildDemoInboundPayload(randomUUID());
 
-        doThrow(new RuntimeException("Service failure")).when(serviceMock).process(testKey, testEvent);
+        doThrow(new RuntimeException("Service failure")).when(serviceMock).process(testKey, testPayload);
 
-        consumer.listen(testKey, testEvent);
+        consumer.listen(testKey, testPayload);
 
-        verify(serviceMock, times(1)).process(testKey, testEvent);
+        verify(serviceMock, times(1)).process(testKey, testPayload);
     }
 }

@@ -2,8 +2,8 @@ package demo.kafka.consumer;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import demo.kafka.event.DemoInboundEvent;
 import demo.kafka.event.DemoInboundKey;
+import demo.kafka.event.DemoInboundPayload;
 import demo.kafka.service.DemoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class KafkaDemoConsumer {
             topics = "demo-inbound-topic",
             groupId = "demo-consumer-group",
             containerFactory = "kafkaListenerContainerFactory")
-    public void listen(@Header(KafkaHeaders.RECEIVED_KEY) DemoInboundKey key, @Payload final DemoInboundEvent payload) {
+    public void listen(@Header(KafkaHeaders.RECEIVED_KEY) DemoInboundKey key, @Payload final DemoInboundPayload payload) {
         counter.getAndIncrement();
         log.info("Received message [" +counter.get()+ "] - key primaryId: " + key.getPrimaryId() + " key secondaryId: " + key.getSecondaryId() + " - payload: " + payload);
         try {

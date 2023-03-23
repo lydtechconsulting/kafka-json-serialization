@@ -3,8 +3,8 @@ package demo.kafka;
 import java.util.HashMap;
 import java.util.Map;
 
-import demo.kafka.event.DemoInboundEvent;
 import demo.kafka.event.DemoInboundKey;
+import demo.kafka.event.DemoInboundPayload;
 import demo.kafka.event.DemoOutboundEvent;
 import demo.kafka.event.DemoOutboundKey;
 import lombok.extern.slf4j.Slf4j;
@@ -30,14 +30,14 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 public class KafkaDemoConfiguration {
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<DemoInboundKey, DemoInboundEvent> kafkaListenerContainerFactory(final ConsumerFactory<DemoInboundKey, DemoInboundEvent> consumerFactory) {
-        final ConcurrentKafkaListenerContainerFactory<DemoInboundKey, DemoInboundEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<DemoInboundKey, DemoInboundPayload> kafkaListenerContainerFactory(final ConsumerFactory<DemoInboundKey, DemoInboundPayload> consumerFactory) {
+        final ConcurrentKafkaListenerContainerFactory<DemoInboundKey, DemoInboundPayload> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<DemoInboundKey, DemoInboundEvent> consumerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
+    public ConsumerFactory<DemoInboundKey, DemoInboundPayload> consumerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
         final Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 
@@ -47,7 +47,7 @@ public class KafkaDemoConfiguration {
 
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
-        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, DemoInboundEvent.class.getCanonicalName());
+        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, DemoInboundPayload.class.getCanonicalName());
 
         return new DefaultKafkaConsumerFactory<>(config);
     }

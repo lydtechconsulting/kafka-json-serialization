@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import demo.kafka.KafkaDemoConfiguration;
-import demo.kafka.event.DemoInboundEvent;
 import demo.kafka.event.DemoInboundKey;
+import demo.kafka.event.DemoInboundPayload;
 import demo.kafka.event.DemoOutboundEvent;
 import demo.kafka.event.DemoOutboundKey;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +44,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import static demo.kafka.util.TestEventData.buildDemoInboundEvent;
 import static demo.kafka.util.TestEventData.buildDemoInboundKey;
+import static demo.kafka.util.TestEventData.buildDemoInboundPayload;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -89,12 +89,12 @@ public class KafkaIntegrationTest {
          */
 
         @Bean
-        public KafkaTemplate<DemoInboundKey, DemoInboundEvent> testKafkaTemplate(final ProducerFactory<DemoInboundKey, DemoInboundEvent> testProducerFactory) {
+        public KafkaTemplate<DemoInboundKey, DemoInboundPayload> testKafkaTemplate(final ProducerFactory<DemoInboundKey, DemoInboundPayload> testProducerFactory) {
             return new KafkaTemplate<>(testProducerFactory);
         }
 
         @Bean(name = "testProducerFactory")
-        public ProducerFactory<DemoInboundKey, DemoInboundEvent> testProducerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
+        public ProducerFactory<DemoInboundKey, DemoInboundPayload> testProducerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
             final Map<String, Object> config = new HashMap<>();
             config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
             config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
@@ -161,15 +161,15 @@ public class KafkaIntegrationTest {
         DemoInboundKey inboundKey = buildDemoInboundKey(keyPrimaryId, keySecondaryId);
 
         UUID payloadId = UUID.randomUUID();
-        DemoInboundEvent inboundEvent = buildDemoInboundEvent(payloadId);
-        kafkaTemplate.send(DEMO_INBOUND_TEST_TOPIC, inboundKey, inboundEvent).get();
+        DemoInboundPayload inboundPayload = buildDemoInboundPayload(payloadId);
+        kafkaTemplate.send(DEMO_INBOUND_TEST_TOPIC, inboundKey, inboundPayload).get();
 
         Awaitility.await().atMost(1, TimeUnit.SECONDS).pollDelay(100, TimeUnit.MILLISECONDS)
                 .until(testReceiver.counter::get, equalTo(1));
 
         assertThat(testReceiver.keyedMessages.size(), equalTo(1));
         assertThat(testReceiver.keyedMessages.get(0).getLeft().getId(), equalTo(keyPrimaryId));
-        assertThat(testReceiver.keyedMessages.get(0).getRight().getOutboundData(), equalTo("Processed: " + inboundEvent.getInboundData()));
+        assertThat(testReceiver.keyedMessages.get(0).getRight().getOutboundData(), equalTo("Processed: " + inboundPayload.getInboundData()));
     }
 
     /**
@@ -184,8 +184,8 @@ public class KafkaIntegrationTest {
             DemoInboundKey inboundKey = buildDemoInboundKey(keyPrimaryId, keySecondaryId);
 
             UUID payloadId = UUID.randomUUID();
-            DemoInboundEvent inboundEvent = buildDemoInboundEvent(payloadId);
-            kafkaTemplate.send(DEMO_INBOUND_TEST_TOPIC, inboundKey, inboundEvent).get();
+            DemoInboundPayload inboundPayload = buildDemoInboundPayload(payloadId);
+            kafkaTemplate.send(DEMO_INBOUND_TEST_TOPIC, inboundKey, inboundPayload).get();
         }
 
         Awaitility.await().atMost(3, TimeUnit.SECONDS).pollDelay(100, TimeUnit.MILLISECONDS)

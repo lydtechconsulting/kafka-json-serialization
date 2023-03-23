@@ -1,7 +1,7 @@
 package demo.kafka.service;
 
-import demo.kafka.event.DemoInboundEvent;
 import demo.kafka.event.DemoInboundKey;
+import demo.kafka.event.DemoInboundPayload;
 import demo.kafka.event.DemoOutboundEvent;
 import demo.kafka.event.DemoOutboundKey;
 import demo.kafka.producer.KafkaDemoProducer;
@@ -18,10 +18,10 @@ public class DemoService {
     @Autowired
     private final KafkaDemoProducer kafkaDemoProducer;
 
-    public void process(DemoInboundKey key, DemoInboundEvent event) {
+    public void process(DemoInboundKey key, DemoInboundPayload payload) {
         DemoOutboundEvent outboundEvent = DemoOutboundEvent.builder()
-                .id(event.getId())
-                .outboundData("Processed: " + event.getInboundData())
+                .id(payload.getId())
+                .outboundData("Processed: " + payload.getInboundData())
                 .build();
         // Set the id of the outbound key to the primaryId of the inbound key.
         DemoOutboundKey outboundKey = DemoOutboundKey.builder()
