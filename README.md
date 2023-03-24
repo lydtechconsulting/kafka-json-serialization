@@ -40,12 +40,12 @@ Produce a demo-inbound message:
 kafka-console-producer \
 --topic demo-inbound-topic \
 --broker-list kafka:29092 \
---property "key.separator=:" \
+--property "key.separator=;" \
 --property parse.key=true
 ```
 Now enter the message (with key prefix):
 ```
-"my-key":{"id": "123-abc", "inboundData": "my-data"}
+{"primaryId":"f6914736-bbd1-4a4b-b1a7-58fac2d0e4d2", "secondaryId": "c081f385-38e4-4a1d-a93e-5412eeb0121d"};{"id": "168f141e-93ae-427f-9e88-2eda6ac5823d", "inboundData": "my-data"}
 ```
 The demo-inbound message is consumed by the application, which emits a resulting demo-outbound message.
 
@@ -54,7 +54,9 @@ Check for the emitted demo-outbound message:
 kafka-console-consumer \
 --topic demo-outbound-topic \
 --bootstrap-server kafka:29092 \
---from-beginning
+--from-beginning \
+--property print.key=true \
+--property key.separator=";"
 ```
 Output:
 ```
