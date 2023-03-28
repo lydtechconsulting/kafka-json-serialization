@@ -1,9 +1,7 @@
 package demo.kafka.integration;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,27 +13,17 @@ import demo.kafka.event.DemoOutboundEvent;
 import demo.kafka.event.DemoOutboundKey;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.ContainerTestUtils;
@@ -81,44 +69,6 @@ public class KafkaIntegrationTest {
         @Bean
         public KafkaTestListener testReceiver() {
             return new KafkaTestListener();
-        }
-
-        /**
-         * Kafka beans for the integration test:  the test produces a DemoInboundEvent (with a DemoInboundKey) to be consumed
-         * by the application and consumes a DemoOutboundEvent (with a DemoOutboundKey) emitted by the application.
-         */
-
-        @Bean
-        public KafkaTemplate<DemoInboundKey, DemoInboundPayload> testKafkaTemplate(final ProducerFactory<DemoInboundKey, DemoInboundPayload> testProducerFactory) {
-            return new KafkaTemplate<>(testProducerFactory);
-        }
-
-        @Bean(name = "testProducerFactory")
-        public ProducerFactory<DemoInboundKey, DemoInboundPayload> testProducerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
-            final Map<String, Object> config = new HashMap<>();
-            config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-            config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-            config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-            return new DefaultKafkaProducerFactory<>(config);
-        }
-
-        @Bean(name = "testKafkaListenerContainerFactory")
-        public ConcurrentKafkaListenerContainerFactory<DemoOutboundKey, DemoOutboundEvent> testKafkaListenerContainerFactory(final ConsumerFactory<DemoOutboundKey, DemoOutboundEvent> testConsumerFactory) {
-            final ConcurrentKafkaListenerContainerFactory<DemoOutboundKey, DemoOutboundEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
-            factory.setConsumerFactory(testConsumerFactory);
-            return factory;
-        }
-
-        @Bean(name = "testConsumerFactory")
-        public ConsumerFactory<DemoOutboundKey, DemoOutboundEvent> testConsumerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
-            final Map<String, Object> config = new HashMap<>();
-            config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-            config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-            config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-            config.put(JsonDeserializer.KEY_DEFAULT_TYPE, DemoOutboundKey.class.getCanonicalName());
-            config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, DemoOutboundEvent.class.getCanonicalName());
-
-            return new DefaultKafkaConsumerFactory<>(config);
         }
     }
 

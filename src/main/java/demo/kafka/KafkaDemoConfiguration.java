@@ -5,8 +5,6 @@ import java.util.Map;
 
 import demo.kafka.event.DemoInboundKey;
 import demo.kafka.event.DemoInboundPayload;
-import demo.kafka.event.DemoOutboundEvent;
-import demo.kafka.event.DemoOutboundKey;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -30,14 +28,14 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 public class KafkaDemoConfiguration {
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<DemoInboundKey, DemoInboundPayload> kafkaListenerContainerFactory(final ConsumerFactory<DemoInboundKey, DemoInboundPayload> consumerFactory) {
-        final ConcurrentKafkaListenerContainerFactory<DemoInboundKey, DemoInboundPayload> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(final ConsumerFactory<Object, Object> consumerFactory) {
+        final ConcurrentKafkaListenerContainerFactory<?, ?> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<DemoInboundKey, DemoInboundPayload> consumerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
+    public ConsumerFactory<Object, Object> consumerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
         final Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 
@@ -53,12 +51,12 @@ public class KafkaDemoConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<DemoOutboundKey, DemoOutboundEvent> kafkaTemplate(final ProducerFactory<DemoOutboundKey, DemoOutboundEvent> producerFactory) {
+    public KafkaTemplate<?, ?> kafkaTemplate(final ProducerFactory<?, ?> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 
     @Bean
-    public ProducerFactory<DemoOutboundKey, DemoOutboundEvent> producerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
+    public ProducerFactory<?, ?> producerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
         final Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 
