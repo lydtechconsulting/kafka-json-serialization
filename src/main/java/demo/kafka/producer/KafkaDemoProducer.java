@@ -18,7 +18,7 @@ public class KafkaDemoProducer {
     private final KafkaDemoProperties properties;
 
     @Autowired
-    private final KafkaTemplate kafkaTemplate;
+    private final KafkaTemplate<DemoOutboundKey, DemoOutboundEvent> kafkaTemplate;
 
     public SendResult<DemoOutboundKey, DemoOutboundEvent> sendMessage(DemoOutboundKey key, DemoOutboundEvent event) {
         try {
