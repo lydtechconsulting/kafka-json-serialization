@@ -49,7 +49,7 @@ public class KafkaIntegrationTest {
     final static String DEMO_OUTBOUND_TEST_TOPIC = "demo-outbound-topic";
 
     @Autowired
-    private KafkaTemplate<DemoInboundKey, DemoInboundPayload> kafkaTemplate;
+    private KafkaTemplate<Object, Object> kafkaTemplate;
 
     @Autowired
     private EmbeddedKafkaBroker embeddedKafkaBroker;

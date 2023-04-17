@@ -28,14 +28,14 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 public class KafkaDemoConfiguration {
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(final ConsumerFactory<Object, Object> consumerFactory) {
+    public ConcurrentKafkaListenerContainerFactory<Object, Object> kafkaListenerContainerFactory(final ConsumerFactory<Object, Object> consumerFactory) {
         final ConcurrentKafkaListenerContainerFactory<Object, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<?, ?> consumerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
+    public ConsumerFactory<Object, Object> consumerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
         final Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 
@@ -51,12 +51,12 @@ public class KafkaDemoConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<?, ?> kafkaTemplate(final ProducerFactory<?, ?> producerFactory) {
+    public KafkaTemplate<Object, Object> kafkaTemplate(final ProducerFactory<Object, Object> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 
     @Bean
-    public ProducerFactory<?, ?> producerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
+    public ProducerFactory<Object, Object> producerFactory(@Value("${kafka.bootstrap-servers}") final String bootstrapServers) {
         final Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 
