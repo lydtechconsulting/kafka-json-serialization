@@ -2,7 +2,7 @@ package demo.kafka.service;
 
 import demo.kafka.event.DemoInboundKey;
 import demo.kafka.event.DemoInboundPayload;
-import demo.kafka.event.DemoOutboundEvent;
+import demo.kafka.event.DemoOutboundPayload;
 import demo.kafka.event.DemoOutboundKey;
 import demo.kafka.producer.KafkaDemoProducer;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class DemoService {
     private final KafkaDemoProducer kafkaDemoProducer;
 
     public void process(DemoInboundKey key, DemoInboundPayload payload) {
-        DemoOutboundEvent outboundEvent = DemoOutboundEvent.builder()
+        DemoOutboundPayload outboundPayload = DemoOutboundPayload.builder()
                 .id(payload.getId())
                 .outboundData("Processed: " + payload.getInboundData())
                 .build();
@@ -27,6 +27,6 @@ public class DemoService {
         DemoOutboundKey outboundKey = DemoOutboundKey.builder()
                 .id(key.getPrimaryId())
                 .build();
-        kafkaDemoProducer.sendMessage(outboundKey, outboundEvent);
+        kafkaDemoProducer.sendMessage(outboundKey, outboundPayload);
     }
 }

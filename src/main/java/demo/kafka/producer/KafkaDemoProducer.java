@@ -1,6 +1,6 @@
 package demo.kafka.producer;
 
-import demo.kafka.event.DemoOutboundEvent;
+import demo.kafka.event.DemoOutboundPayload;
 import demo.kafka.event.DemoOutboundKey;
 import demo.kafka.properties.KafkaDemoProperties;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +20,9 @@ public class KafkaDemoProducer {
     @Autowired
     private final KafkaTemplate<Object, Object> kafkaTemplate;
 
-    public SendResult<DemoOutboundKey, DemoOutboundEvent> sendMessage(DemoOutboundKey key, DemoOutboundEvent event) {
+    public SendResult<DemoOutboundKey, DemoOutboundPayload> sendMessage(DemoOutboundKey key, DemoOutboundPayload event) {
         try {
-            SendResult<DemoOutboundKey, DemoOutboundEvent> result = (SendResult) kafkaTemplate.send(properties.getOutboundTopic(), key, event).get();
+            SendResult<DemoOutboundKey, DemoOutboundPayload> result = (SendResult) kafkaTemplate.send(properties.getOutboundTopic(), key, event).get();
             log.info("Emitted message - key: " + key + " id: " + event.getId() + " - payload: " + event.getOutboundData());
             return result;
         } catch (Exception e) {

@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import demo.kafka.event.DemoInboundKey;
 import demo.kafka.event.DemoInboundPayload;
-import demo.kafka.event.DemoOutboundEvent;
+import demo.kafka.event.DemoOutboundPayload;
 import demo.kafka.event.DemoOutboundKey;
 
 public class TestEventData {
@@ -32,8 +32,8 @@ public class TestEventData {
                 .build();
     }
 
-    public static DemoOutboundEvent buildDemoOutboundEvent(UUID id) {
-        return DemoOutboundEvent.builder()
+    public static DemoOutboundPayload buildDemoOutboundEvent(UUID id) {
+        return DemoOutboundPayload.builder()
                 .id(id)
                 .outboundData(OUTBOUND_DATA)
                 .build();

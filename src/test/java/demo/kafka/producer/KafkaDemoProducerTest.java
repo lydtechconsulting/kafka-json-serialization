@@ -3,7 +3,7 @@ package demo.kafka.producer;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import demo.kafka.event.DemoOutboundEvent;
+import demo.kafka.event.DemoOutboundPayload;
 import demo.kafka.event.DemoOutboundKey;
 import demo.kafka.properties.KafkaDemoProperties;
 import demo.kafka.util.TestEventData;
@@ -41,7 +41,7 @@ public class KafkaDemoProducerTest {
     @Test
     public void testSendMessage_Success() throws Exception {
         DemoOutboundKey testKey = TestEventData.buildDemoOutboundKey(randomUUID());
-        DemoOutboundEvent testPayload = TestEventData.buildDemoOutboundEvent(randomUUID());
+        DemoOutboundPayload testPayload = TestEventData.buildDemoOutboundEvent(randomUUID());
         String topic = "test-outbound-topic";
 
         when(propertiesMock.getOutboundTopic()).thenReturn(topic);
@@ -62,7 +62,7 @@ public class KafkaDemoProducerTest {
     @Test
     public void testSendMessage_ExceptionOnSend() throws Exception {
         DemoOutboundKey testKey = TestEventData.buildDemoOutboundKey(randomUUID());
-        DemoOutboundEvent testPayload = TestEventData.buildDemoOutboundEvent(randomUUID());
+        DemoOutboundPayload testPayload = TestEventData.buildDemoOutboundEvent(randomUUID());
         String topic = "test-outbound-topic";
 
         when(propertiesMock.getOutboundTopic()).thenReturn(topic);

@@ -2,7 +2,7 @@ package demo.kafka.service;
 
 import demo.kafka.event.DemoInboundKey;
 import demo.kafka.event.DemoInboundPayload;
-import demo.kafka.event.DemoOutboundEvent;
+import demo.kafka.event.DemoOutboundPayload;
 import demo.kafka.event.DemoOutboundKey;
 import demo.kafka.producer.KafkaDemoProducer;
 import demo.kafka.util.TestEventData;
@@ -36,6 +36,6 @@ public class DemoServiceTest {
 
         service.process(testKey, testPayload);
 
-        verify(mockKafkaDemoProducer, times(1)).sendMessage(any(DemoOutboundKey.class), any(DemoOutboundEvent.class));
+        verify(mockKafkaDemoProducer, times(1)).sendMessage(any(DemoOutboundKey.class), any(DemoOutboundPayload.class));
     }
 }

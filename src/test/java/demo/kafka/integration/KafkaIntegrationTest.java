@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import demo.kafka.KafkaDemoConfiguration;
 import demo.kafka.event.DemoInboundKey;
 import demo.kafka.event.DemoInboundPayload;
-import demo.kafka.event.DemoOutboundEvent;
+import demo.kafka.event.DemoOutboundPayload;
 import demo.kafka.event.DemoOutboundKey;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -80,10 +80,10 @@ public class KafkaIntegrationTest {
     public static class KafkaTestListener {
         AtomicInteger counter = new AtomicInteger(0);
 
-        List<ImmutablePair<DemoOutboundKey, DemoOutboundEvent>> keyedMessages = new ArrayList<>();
+        List<ImmutablePair<DemoOutboundKey, DemoOutboundPayload>> keyedMessages = new ArrayList<>();
 
         @KafkaListener(groupId = "KafkaIntegrationTest", topics = DEMO_OUTBOUND_TEST_TOPIC, autoStartup = "true")
-        void receive(@Header(KafkaHeaders.RECEIVED_KEY) DemoOutboundKey key, @Payload final DemoOutboundEvent payload) {
+        void receive(@Header(KafkaHeaders.RECEIVED_KEY) DemoOutboundKey key, @Payload final DemoOutboundPayload payload) {
             log.debug("KafkaTestListener - Received message: id: " + payload.getId() + " - outbound data: " + payload.getOutboundData() + " - key: " + key.getId());
             assertThat(key, notNullValue());
             assertThat(payload, notNullValue());
