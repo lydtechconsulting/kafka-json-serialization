@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class KafkaDemoConsumer {
 
-    final AtomicInteger counter = new AtomicInteger();
     final DemoService demoService;
 
     @KafkaListener(
@@ -26,8 +25,7 @@ public class KafkaDemoConsumer {
             groupId = "demo-consumer-group",
             containerFactory = "kafkaListenerContainerFactory")
     public void listen(@Header(KafkaHeaders.RECEIVED_KEY) DemoInboundKey key, @Payload final DemoInboundPayload payload) {
-        counter.getAndIncrement();
-        log.info("Received message [" +counter.get()+ "] - key primaryId: " + key.getPrimaryId() + " key secondaryId: " + key.getSecondaryId() + " - payload: " + payload);
+        log.info("Received message - key primaryId: " + key.getPrimaryId() + " key secondaryId: " + key.getSecondaryId() + " - payload: " + payload);
         try {
             demoService.process(key, payload);
         } catch (Exception e) {
