@@ -32,6 +32,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import static demo.kafka.integration.KafkaIntegrationTest.DEMO_INBOUND_TEST_TOPIC;
+import static demo.kafka.integration.KafkaIntegrationTest.DEMO_OUTBOUND_TEST_TOPIC;
 import static demo.kafka.util.TestEventData.buildDemoInboundKey;
 import static demo.kafka.util.TestEventData.buildDemoInboundPayload;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -42,11 +44,11 @@ import static org.hamcrest.Matchers.notNullValue;
 @SpringBootTest(classes = { KafkaDemoConfiguration.class } )
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles("test")
-@EmbeddedKafka(controlledShutdown = true, topics = { "demo-inbound-topic", "demo-outbound-topic" })
+@EmbeddedKafka(controlledShutdown = true, topics = { DEMO_INBOUND_TEST_TOPIC, DEMO_OUTBOUND_TEST_TOPIC })
 public class KafkaIntegrationTest {
 
-    final static String DEMO_INBOUND_TEST_TOPIC = "demo-inbound-topic";
-    final static String DEMO_OUTBOUND_TEST_TOPIC = "demo-outbound-topic";
+    protected final static String DEMO_INBOUND_TEST_TOPIC = "demo-inbound-topic";
+    protected final static String DEMO_OUTBOUND_TEST_TOPIC = "demo-outbound-topic";
 
     @Autowired
     private KafkaTemplate<Object, Object> kafkaTemplate;
