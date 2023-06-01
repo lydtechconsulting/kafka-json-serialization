@@ -24,7 +24,7 @@ public class KafkaDemoConsumer {
             topics = "demo-inbound-topic",
             groupId = "demo-consumer-group",
             containerFactory = "kafkaListenerContainerFactory")
-    public void listen(@Header(KafkaHeaders.RECEIVED_KEY) DemoInboundKey key, @Payload final DemoInboundPayload payload) {
+    public void listen(@Header(KafkaHeaders.RECEIVED_KEY) DemoInboundKey key, @Payload DemoInboundPayload payload) {
         log.info("Received message - key primaryId: " + key.getPrimaryId() + " - secondaryId: " + key.getSecondaryId() + " - payload: " + payload);
         try {
             demoService.process(key, payload);
