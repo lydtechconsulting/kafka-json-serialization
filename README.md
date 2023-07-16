@@ -4,7 +4,7 @@ Spring Boot application demonstrating serializing and deserializing messages in 
 
 This repo accompanies the following article: 
 
-- [Kafka JSON Serialization](coming soon)
+- [Kafka JSON Serialization](https://www.lydtechconsulting.com/blog-kafka-json-serialization.html): Demonstrating serialization and deserialization of JSON formatted Kafka messages using Spring Boot with Spring Kafka.
 
 ## Build
 
